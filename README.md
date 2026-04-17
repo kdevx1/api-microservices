@@ -39,14 +39,14 @@ O projeto segue o padrão de monorepo:
 2. **Configuração do Backend:**
    ```bash
    cd backend/auth-service
-   ./mvnw clean install
-   ./mvnw spring-boot:run
+    mvn clean install
+    mvn spring-boot:run
    
 3. **Configuração do Frontend:**
    ```bash
    cd frontend/enterprise-auth
    npm install
-   npm run dev
+   ng serve
 
 ## 🔒 Segurança e Melhores Práticas
    
