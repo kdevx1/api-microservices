@@ -1,0 +1,43 @@
+version: '3.9'
+
+services:
+
+  auth-db:
+    image: postgres:15
+    container_name: ms-auth-db
+    environment:
+      POSTGRES_DB: authdb
+      POSTGRES_USER: devx
+      POSTGRES_PASSWORD: devx
+    ports:
+      - "55433:5432"
+    volumes:
+      - auth_data:/var/lib/postgresql/data
+
+  product-db:
+    image: postgres:15
+    container_name: ms-product-db
+    environment:
+      POSTGRES_DB: productdb
+      POSTGRES_USER: devx
+      POSTGRES_PASSWORD: devx
+    ports:
+      - "5434:5432"
+    volumes:
+      - product_data:/var/lib/postgresql/data
+
+  pgadmin:   
+    image: dpage/pgadmin4
+    container_name: ms-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: devx@email.com
+      PGADMIN_DEFAULT_PASSWORD: devx
+    ports:
+      - "5051:80"
+    depends_on:
+      - auth-db
+      - product-db
+
+volumes:
+  auth_data:
+  product_data:
