@@ -1,0 +1,54 @@
+<mat-toolbar color="primary" class="header">
+
+  <span class="logo">Enterprise</span>
+
+  <span class="spacer"></span>
+  @if (auth.isLogged()) {
+
+    <div class="user-section">
+
+      <!-- AVATAR -->
+      <div
+        class="avatar"
+        [style.background]="avatarColor"
+        [matMenuTriggerFor]="menu"
+      >
+        {{ initials }}
+      </div>
+      <!-- DROPDOWN -->
+      <mat-menu #menu="matMenu" class="menu">
+
+        <div class="menu-header">
+          <div class="avatar big">{{ initials }}</div>
+
+          <div class="user-info">
+            <span class="name">{{ auth.user()?.name }}</span>
+            <span class="email">{{ auth.user()?.email }}</span>
+          </div>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <button mat-menu-item routerLink="/profile">
+          <mat-icon>person</mat-icon>
+          <span>Meu Perfil</span>
+        </button>
+
+        <button mat-menu-item>
+          <mat-icon>settings</mat-icon>
+          <span>Configurações</span>
+        </button>
+
+        <mat-divider></mat-divider>
+
+        <button mat-menu-item (click)="logout()">
+          <mat-icon>logout</mat-icon>
+          <span>Sair</span>
+        </button>
+
+      </mat-menu>
+
+    </div>
+  }
+
+</mat-toolbar>

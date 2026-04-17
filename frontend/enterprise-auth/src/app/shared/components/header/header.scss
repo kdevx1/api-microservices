@@ -1,0 +1,53 @@
+.header {
+  display: flex;
+  padding: 0 1rem;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.user-section {
+  display: flex;
+  align-items: center;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #1e293b;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.avatar.big {
+  width: 48px;
+  height: 48px;
+  font-size: 18px;
+}
+
+.menu-header {
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+  align-items: center;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.name {
+  font-weight: 600;
+}
+
+.email {
+  font-size: 12px;
+  opacity: 0.6;
+}

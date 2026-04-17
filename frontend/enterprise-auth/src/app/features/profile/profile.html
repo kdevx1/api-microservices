@@ -1,0 +1,103 @@
+<mat-card class="profile-card">
+
+  <!-- HEADER -->
+  <div class="profile-header">
+
+    <div class="avatar-wrapper">
+
+      @if (preview) {
+        <img [src]="preview" class="avatar-img" />
+      } @else if (auth.user()?.avatar) {
+        <img [src]="auth.user()?.avatar" class="avatar-img" />
+      } @else {
+        <div class="avatar">
+          {{ auth.user()?.name?.[0] }}
+        </div>
+      }
+
+      <button mat-mini-fab color="primary" class="edit-avatar" (click)="fileInput.click()">
+        <mat-icon>edit</mat-icon>
+        <input #fileInput type="file" (change)="onFileSelected($event)" hidden />
+      </button>
+
+    </div>
+
+    <div class="user-info">
+      <h2>{{ auth.user()?.name }}</h2>
+      <p>{{ auth.user()?.email }}</p>
+
+      <div class="roles">
+        @for (role of auth.user()?.roles; track role) {
+          <span class="role-chip">{{ role }}</span>
+        }
+      </div>
+    </div>
+
+  </div>
+
+</mat-card>
+
+<!-- INFO CARD -->
+<mat-card class="info-card">
+
+  <h3>Informações</h3>
+
+  <div class="info-grid">
+    <div>
+      <label>Email</label>
+      <span>{{ auth.user()?.email }}</span>
+    </div>
+
+    <div>
+      <label>Status</label>
+      <span class="status active">Ativo</span>
+    </div>
+  </div>
+
+</mat-card>
+
+
+<!-- SECURITY -->
+<mat-card class="security-card">
+
+  <h3>Segurança</h3>
+
+  <button mat-raised-button color="primary">
+    < <h4>Alterar Senha</h4>
+  </button>
+
+  <button mat-stroked-button color="warn">
+   <h4>Encerrar Sessões</h4> 
+  </button>
+
+</mat-card>
+
+@if (showCropper) {
+  <div class="cropper-overlay">
+
+    <div class="cropper-modal">
+
+      <h3>Editar Avatar</h3>
+
+      <image-cropper
+        [imageChangedEvent]="imageChangedEvent"
+        [maintainAspectRatio]="true"
+        [aspectRatio]="1"
+        format="png"
+        (imageCropped)="imageCropped($event)">
+      </image-cropper>
+
+      <div class="actions">
+        <button mat-button (click)="showCropper = false">
+          Cancelar
+        </button>
+
+        <button mat-raised-button color="primary" (click)="uploadCropped()">
+          Salvar
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+}
