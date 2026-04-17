@@ -1,0 +1,8 @@
+mkdir config/
+controller/
+service/
+repository/
+domain/
+dto/
+security/
+exception/
