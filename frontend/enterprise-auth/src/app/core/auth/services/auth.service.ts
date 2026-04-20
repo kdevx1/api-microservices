@@ -52,11 +52,11 @@ export class AuthService {
     }
   }
 
-  hasRole(role: Role): boolean {
+  hasRole(role: string): boolean {
     return this._user()?.roles.includes(role) ?? false;
   }
 
-  hasPermission(permission: Permission): boolean {
+  hasPermission(permission: string): boolean {
     return this._user()?.permissions?.includes(permission) ?? false;
   }
 
@@ -66,25 +66,31 @@ export class AuthService {
       const payload = JSON.parse(
         atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))
       );
+
       console.log('TOKEN:', payload);
 
-      const rawRoles =
-        payload.roles ||
+      const authorities: string[] =
         payload.authorities ||
+        payload.roles ||
         (payload.role ? [payload.role] : []);
 
-      // 🔥 NORMALIZA AQUI
-      const roles = rawRoles.map((r: string) =>
-        r.replace('ROLE_', '')
-      );
+      // 🎯 separa roles e permissions corretamente
+      const roles = authorities
+        .filter(a => a.startsWith('ROLE_'))
+        .map(a => a.replace('ROLE_', ''));
+
+      const permissions = authorities
+        .filter(a => !a.startsWith('ROLE_'));
 
       this._user.set({
-      name: payload.name, 
-      email: payload.sub,
-      roles: roles,
-      permissions: payload.permissions || [],
-      avatar: payload.avatar
-    });
+        name: payload.name,
+        email: payload.sub,
+        roles: roles,
+        permissions: permissions,
+        avatar: payload.avatar
+      });
+
+      console.log('USER NORMALIZADO:', this._user());
 
     } catch (e) {
       console.error('Token inválido', e);
@@ -120,4 +126,24 @@ export class AuthService {
       avatar: url
     });
   }
+
+  getUserFromToken() {
+  const token = localStorage.getItem('token');
+  if (!token) return null;
+
+  const payload = JSON.parse(atob(token.split('.')[1]));
+
+  return {
+    email: payload.sub,
+    name: payload.name,
+    authorities: payload.authorities || []
+  };
+}
+
+hasAuthority(permission: string): boolean {
+  const user = this.getUserFromToken();
+  return user?.authorities.includes(permission);
+}
+
+
 }

@@ -11,8 +11,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -53,19 +51,23 @@ public class JwtFilter extends OncePerRequestFilter {
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            if (!jwtService.isTokenValid(token)) {
+            if (!jwtService.isTokenValid(token, username)) {
                 filterChain.doFilter(request, response);
                 return;
             }
 
-            String role = jwtService.extractClaim(token, claims -> claims.get("role", String.class));
+            List<?> rawAuthorities =
+                    jwtService.extractClaim(token, claims -> claims.get("authorities", List.class));
 
-            if (!role.startsWith("ROLE_")) {
-                role = "ROLE_" + role;
-            }
+            List<String> authoritiesFromToken =
+                    rawAuthorities.stream()
+                            .map(Object::toString)
+                            .toList();
 
             List<SimpleGrantedAuthority> authorities =
-                    List.of(new SimpleGrantedAuthority(role));
+                    authoritiesFromToken.stream()
+                            .map(SimpleGrantedAuthority::new)
+                            .toList();
 
             UsernamePasswordAuthenticationToken authToken =
                     new UsernamePasswordAuthenticationToken(
@@ -82,7 +84,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
             System.out.println("✅ AUTH OK");
             System.out.println("USER: " + username);
-            System.out.println("ROLE: " + role);
+            System.out.println("AUTHORITIES: " + authorities);
         }
 
     } catch (Exception ex) {
@@ -92,3 +94,4 @@ public class JwtFilter extends OncePerRequestFilter {
     filterChain.doFilter(request, response);
     }
 }
+

@@ -1,19 +1,21 @@
-import { Role, Permission } from '../../auth/models/permission.model/permission.model';
+import { Permission, Role } from "../../auth/models/permission.model/permission.model";
 
 export const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
-  ADMIN: [
-    'DASHBOARD_VIEW',
-    'USER_CREATE',
-    'USER_EDIT',
-    'USER_DELETE',
-    'ADMIN_PANEL'
+[Role.USER]: [
+    Permission.READ,
+    Permission.DASHBOARD_VIEW
   ],
-  MANAGER: [
-    'DASHBOARD_VIEW',
-    'USER_CREATE',
-    'USER_EDIT'
+  [Role.ADMIN]: [
+    Permission.READ,
+    Permission.WRITE,
+    Permission.DELETE,
+    Permission.ALTER,
+    Permission.DASHBOARD_VIEW
   ],
-  USER: [
-    'DASHBOARD_VIEW'
+
+  [Role.MANAGER]: [
+    Permission.READ,
+    Permission.WRITE,
+    Permission.DASHBOARD_VIEW
   ]
 };

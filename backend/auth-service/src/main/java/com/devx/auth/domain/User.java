@@ -5,6 +5,7 @@ import  com.devx.auth.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -33,8 +34,14 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    private List<String> permissions;
+    public List<String> getAuthorities() {
+        List<String> authorities = new ArrayList<>();
+
+        authorities.add(this.role.name());
+        authorities.addAll(this.role.getPermissions());
+
+        return authorities;
+    }
     
     @Column(name = "avatar")
     private String avatar;

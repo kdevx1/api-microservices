@@ -1,23 +1,22 @@
-// import { MenuItem } from '../../auth/models/menu.model/menu.model';
-import { MenuItem } from '../../auth/models/menu.model/menu.model';
+import { Permission } from "../../auth/models/permission.model/permission.model";
 
-export const MENU_ITEMS: MenuItem[] = [
+export const MENU_ITEMS = [
   {
     label: 'Dashboard',
-    icon: 'dashboard',
     route: '/dashboard',
+    icon: 'dashboard',
     permission: 'DASHBOARD_VIEW'
   },
   {
-    label: 'Admin',
-    icon: 'admin_panel_settings',
-    route: '/admin',
-    permission: 'ADMIN_PANEL'
+    label: 'Usuários',
+    route: '/users',
+    icon: 'group',
+    permission: 'READ'
   },
   {
-    label: 'Perfil',
-    icon: 'person',
-    route: '/profile',
-    permission: 'DASHBOARD_VIEW'
+    label: 'Criar Usuário',
+    route: '/users/create',
+    icon: 'person_add',
+    permission: 'WRITE'
   }
 ];

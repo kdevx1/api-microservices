@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { MENU_ITEMS } from '../../../core/config/menu.config/menu.config';
 import { RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
@@ -15,10 +15,8 @@ export class Sidebar {
 
   private auth = inject(AuthService);
 
-  menu = MENU_ITEMS.filter(item =>
-
-    this.auth.hasPermission(item.permission)
-
-  );
+ menu = MENU_ITEMS.filter(item =>
+  this.auth.hasPermission(item.permission)
+ );
 
 }

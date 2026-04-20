@@ -1,0 +1,32 @@
+<h2>Usuários</h2>
+
+<a *ngIf="auth.hasAuthority('WRITE')" routerLink="/users/create">
+  ➕ Novo Usuário
+</a>
+
+<table>
+  <tr>
+    <th>Nome</th>
+    <th>Email</th>
+    <th>Role</th>
+    <th>Ações</th>
+  </tr>
+
+  <tr *ngFor="let u of users()">
+    <td>{{ u.name }}</td>
+    <td>{{ u.email }}</td>
+    <td>{{ u.role }}</td>
+
+    <td>
+      <button *ngIf="auth.hasAuthority('ALTER')"
+              [routerLink]="['/users/edit', u.id]">
+        Editar
+      </button>
+
+      <button *ngIf="auth.hasAuthority('DELETE')"
+              (click)="delete(u.id)">
+        Excluir
+      </button>
+    </td>
+  </tr>
+</table>

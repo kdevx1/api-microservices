@@ -30,7 +30,7 @@ export class Header {
 
   get initials(): string {
     const user = this.auth.user();
-
+console.log('USER:', this.auth.user());
     if (!user) return '';
 
     const name = user.name || user.email;

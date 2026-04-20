@@ -1,15 +1,15 @@
 <div class="sidebar">
 
-  <h2 class="logo">SGA - Sistema de Gestão de Acolhimentos</h2>
+  <h2 class="logo">SGA - Sis. Gestão de Acolhimentos</h2>
   @for (item of menu; track item.route) {
     <a [routerLink]="item.route" routerLinkActive="active">
       <mat-icon>{{ item.icon }}</mat-icon>
       {{ item.label }}
     </a>
   }
-  <!--Onde colocamos os menus laterais com icones-->
-  <!-- <a routerLink="/dashboard" routerLinkActive="active">
+ <!--Onde colocamos os menus laterais com icones-->
+  <a routerLink="/dashboard" routerLinkActive="active">
     <mat-icon>dashboard</mat-icon>
     Dashboard
-  </a> -->
+  </a>
 </div>

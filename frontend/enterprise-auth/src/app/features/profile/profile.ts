@@ -52,31 +52,31 @@ export class Profile {
     this.croppedImage = event.base64;
   }
 
-  uploadCropped() {
-    if (!this.croppedImage) return;
+  // uploadCropped() {
+  //   if (!this.croppedImage) return;
 
-    const blob = this.base64ToBlob(this.croppedImage);
+  //   const blob = this.base64ToBlob(this.croppedImage);
 
-    const file = new File([blob], 'avatar.png', { type: 'image/png' });
+  //   const file = new File([blob], 'avatar.png', { type: 'image/png' });
 
-    this.userService.uploadAvatar(file).subscribe({
-      next: (res) => {
-        this.auth.updateAvatar(res.url);
-        this.preview = res.url;
-        this.showCropper = false;
-      }
-    });
-  }
+  //   this.userService.uploadAvatar(file).subscribe({
+  //     next: (res) => {
+  //       this.auth.updateAvatar(res.url);
+  //       this.preview = res.url;
+  //       this.showCropper = false;
+  //     }
+  //   });
+  // }
 
-  base64ToBlob(base64: string): Blob {
-    const byteString = atob(base64.split(',')[1]);
-    const arrayBuffer = new ArrayBuffer(byteString.length);
-    const intArray = new Uint8Array(arrayBuffer);
+  // base64ToBlob(base64: string): Blob {
+  //   const byteString = atob(base64.split(',')[1]);
+  //   const arrayBuffer = new ArrayBuffer(byteString.length);
+  //   const intArray = new Uint8Array(arrayBuffer);
 
-    for (let i = 0; i < byteString.length; i++) {
-      intArray[i] = byteString.charCodeAt(i);
-    }
+  //   for (let i = 0; i < byteString.length; i++) {
+  //     intArray[i] = byteString.charCodeAt(i);
+  //   }
 
-    return new Blob([arrayBuffer], { type: 'image/png' });
-  }
+  //   return new Blob([arrayBuffer], { type: 'image/png' });
+  // }
 }
