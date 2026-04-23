@@ -1,7 +1,7 @@
 export enum Role {
-  ADMIN='ADMIN', 
-  MANAGER='MANAGER',
-  USER='USER'
+  ADMIN='ROLE_ADMIN', 
+  MANAGER='ROLE_MANAGER',
+  USER='ROLE_USER'
   
 }
 
@@ -10,5 +10,5 @@ export enum Permission {
   WRITE = 'WRITE',
   DELETE = 'DELETE',
   ALTER = 'ALTER',
-  DASHBOARD_VIEW = 'DASHBOARD_VIEW' // 👈 aqui nasce
+  DASHBOARD_VIEW = 'DASHBOARD_VIEW'
 }

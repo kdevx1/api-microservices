@@ -1,35 +1,69 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, ViewChild, AfterViewInit, inject } from '@angular/core';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { merge, startWith, switchMap } from 'rxjs';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { UserService } from '../../../core/auth/services/user.service/user.service';
-import { AuthService } from '../../../core/auth/services/auth.service';
+import { UserDataSource } from '../../users/user-datasource/user.datasource';
+import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { MatTableModule } from '@angular/material/table';
+import { FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
   standalone: true,
-  selector: 'app-user-list',
-  imports: [CommonModule, RouterModule],
-  templateUrl: './user.list.html'
+  templateUrl: './user.list.html',
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatTableModule,
+    MatPaginator,
+    MatSort,
+    MatIconModule,
+    MatFormFieldModule,
+    MatProgressSpinnerModule,
+        
+  ]
 })
-export class UserList {
+export class UserList implements AfterViewInit {
 
   private service = inject(UserService);
-  auth = inject(AuthService);
 
-  users = signal<any[]>([]);
+  dataSource = new UserDataSource(this.service);
 
-  ngOnInit() {
-    this.load();
-  }
+  displayedColumns = ['name', 'email', 'role', 'actions'];
 
-  load() {
-    this.service.getAll().subscribe(res => {
-      this.users.set(res.content || res); // suporta paginação ou lista
-    });
-  }
+  total = 0;
 
-  delete(id: number) {
-    if (!confirm('Excluir usuário?')) return;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
 
-    this.service.delete(id).subscribe(() => this.load());
+  filter = '';
+
+  ngAfterViewInit() {
+
+    merge(this.paginator.page, this.sort.sortChange)
+      .pipe(
+        startWith({}),
+        switchMap(() => {
+
+          const params = {
+            page: this.paginator.pageIndex,
+            size: this.paginator.pageSize,
+            sort: this.sort.active
+              ? `${this.sort.active},${this.sort.direction}`
+              : '',
+            name: this.filter
+          };
+
+          this.dataSource.loadUsers(params);
+
+          return [];
+        })
+      )
+      .subscribe(() => {
+        this.total = this.dataSource.total;
+      });
   }
 }

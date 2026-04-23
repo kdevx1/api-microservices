@@ -37,7 +37,9 @@ public class User {
     public List<String> getAuthorities() {
         List<String> authorities = new ArrayList<>();
 
-        authorities.add(this.role.name());
+        // 👇 REMOVE duplicação
+        authorities.add(this.role.name()); // OK
+
         authorities.addAll(this.role.getPermissions());
 
         return authorities;

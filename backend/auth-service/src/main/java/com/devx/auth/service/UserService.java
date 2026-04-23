@@ -145,8 +145,8 @@ public class UserService {
    public User findByEmail(String email) {
     String normalizedEmail = email.trim().toLowerCase();
 
-    System.out.println("🔍 BUSCANDO: [" + normalizedEmail + "]");
-    System.out.println("📦 USERS NO BANCO: " + userRepository.findAll());
+    // System.out.println("🔍 BUSCANDO: [" + normalizedEmail + "]");
+    // System.out.println("📦 USERS NO BANCO: " + userRepository.findAll());
 
     return userRepository.findByEmailIgnoreCase(normalizedEmail)
         .orElseThrow(() -> new RuntimeException("User not found for email: " + normalizedEmail));

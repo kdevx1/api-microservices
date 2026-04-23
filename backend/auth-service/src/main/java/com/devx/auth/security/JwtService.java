@@ -37,8 +37,8 @@ public class JwtService {
 
         // 🔓 gera token
         public String generateToken(User user) {
-System.out.println("USER AUTHORITIES ANTES DO TOKEN: " + user.getAuthorities());
-System.out.println("EMAIL DO TOKEN: " + user.getEmail());
+        System.out.println("USER AUTHORITIES ANTES DO TOKEN: " + user.getAuthorities());
+        System.out.println("EMAIL DO TOKEN: " + user.getEmail());
         return Jwts.builder()
                 .setSubject(user.getEmail())
                 .claim("name", user.getName())

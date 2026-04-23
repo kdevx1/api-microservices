@@ -15,8 +15,8 @@ export class Sidebar {
 
   private auth = inject(AuthService);
 
- menu = MENU_ITEMS.filter(item =>
-  this.auth.hasPermission(item.permission)
- );
+  menu = MENU_ITEMS.filter(item =>
+      this.auth.hasPermission(item.permission)
+  );
 
 }

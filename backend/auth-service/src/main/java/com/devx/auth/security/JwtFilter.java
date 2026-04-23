@@ -81,10 +81,10 @@ public class JwtFilter extends OncePerRequestFilter {
             );
 
             SecurityContextHolder.getContext().setAuthentication(authToken);
-
             System.out.println("✅ AUTH OK");
             System.out.println("USER: " + username);
             System.out.println("AUTHORITIES: " + authorities);
+            System.out.println("AUTH HEADER: " + request.getHeader("Authorization"));
         }
 
     } catch (Exception ex) {

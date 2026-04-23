@@ -43,7 +43,7 @@ public class UserController {
     }
 
     // 🔥 LIST (PAGINADO + FILTRO)
-    @PreAuthorize("hasAnyRole('ADMIN') or hasAuthority('READ')")
+    @PreAuthorize("hasAuthority('READ')")
     @GetMapping
     public PageResponse<UserResponse> search(
             @RequestParam(required = false) String email,

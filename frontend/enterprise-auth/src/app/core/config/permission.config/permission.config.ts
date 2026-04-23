@@ -11,7 +11,7 @@ export const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
     Permission.DELETE,
     Permission.ALTER,
     Permission.DASHBOARD_VIEW
-  ],
+  ],  
 
   [Role.MANAGER]: [
     Permission.READ,
