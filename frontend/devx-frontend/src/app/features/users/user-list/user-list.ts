@@ -2,15 +2,15 @@ import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UserService } from '../../../core/services/user.service';
-import { UserResponse } from '../../../core/models/user.model';
-import { DashboardResponse } from '../../../core/models/user.model';
+import { DashboardResponse, UserResponse } from '../../../core/models/user.model';
+import { EditUserModal } from '../../../shared/components/edit-user-modal/edit-user-modal';
 
 @Component({
   selector: 'app-user-list',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, EditUserModal],
   templateUrl: './user-list.html',
-  styleUrl: './user-list.scss'
+  styleUrls: ['./user-list.scss']
 })
 export class UserList implements OnInit {
 
@@ -23,6 +23,9 @@ export class UserList implements OnInit {
   totalPages = signal(0);
   currentPage = signal(0);
   pageSize = 10;
+  //Editar
+  editVisible = signal(false);
+  selectedUser = signal<UserResponse | null>(null);
 
   // Filtros
   searchName = '';
@@ -103,5 +106,11 @@ export class UserList implements OnInit {
     const end = Math.min(total - 1, start + 2);
     for (let i = start; i <= end; i++) pages.push(i);
     return pages;
+  }
+
+
+  openEdit(user: UserResponse) {
+    this.selectedUser.set(user);
+    this.editVisible.set(true);
   }
 }

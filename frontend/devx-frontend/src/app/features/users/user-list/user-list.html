@@ -103,17 +103,23 @@
           <span class="badge" [class.active]="user.active" [class.inactive]="!user.active">
             {{ user.active ? 'Ativo' : 'Inativo' }}
           </span>
+
           <div class="actions">
-            <button class="action-btn edit" title="Editar" (click)="toggleActive(user)">
+
+            <!-- ✅ EDITAR (CORRIGIDO) -->
+            <button class="action-btn edit" title="Editar" (click)="openEdit(user)">
               <svg viewBox="0 0 16 16" fill="none">
                 <path d="M2 11.5V14h2.5l7-7L9 4.5l-7 7z" stroke="#534AB7" stroke-width="1.2"/>
               </svg>
             </button>
+
+            <!-- DELETE -->
             <button class="action-btn delete" title="Deletar" (click)="deleteUser(user)">
               <svg viewBox="0 0 16 16" fill="none">
                 <path d="M3 4h10M6 4V3h4v1M5 4v8h6V4" stroke="#E24B4A" stroke-width="1.2" stroke-linecap="round"/>
               </svg>
             </button>
+
           </div>
         </div>
       }
@@ -123,7 +129,7 @@
       }
     }
 
-    <!-- Footer / Paginação -->
+    <!-- Footer -->
     <div class="table-footer">
       <span>Mostrando {{ users().length }} de {{ totalElements() }} usuários</span>
       <div class="pagination">
@@ -136,6 +142,15 @@
         <button class="page-btn" (click)="goToPage(currentPage() + 1)" [disabled]="currentPage() === totalPages() - 1">›</button>
       </div>
     </div>
+
   </div>
 
 </div>
+
+<!-- ✅ MODAL (POSIÇÃO CORRETA) -->
+<app-edit-user-modal
+  [visible]="editVisible()"
+  (visibleChange)="editVisible.set($event)"
+  [user]="selectedUser()"
+  (saved)="loadUsers()"
+/>

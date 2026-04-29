@@ -1,0 +1,108 @@
+@if (visible && user) {
+  <div class="overlay" (click)="close()">
+    <div class="modal" (click)="$event.stopPropagation()">
+
+      <!-- Header -->
+      <div class="modal-header">
+        <div>
+          <div class="modal-title">Editar Usuário</div>
+          <div class="modal-sub">Atualize as informações do usuário</div>
+        </div>
+        <button class="close-btn" (click)="close()">
+          <svg viewBox="0 0 14 14" fill="none">
+            <path d="M1 1l12 12M13 1L1 13" stroke="#5F5E5A" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+
+        <!-- Email truncado -->
+        <div class="email-badge">
+          <svg viewBox="0 0 16 16" fill="none">
+            <rect x="1" y="3" width="14" height="10" rx="2" stroke="#888780" stroke-width="1.5"/>
+            <path d="M1 5l7 5 7-5" stroke="#888780" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <div>
+            <div class="email-label">E-mail (não editável)</div>
+            <div class="email-value">{{ truncateEmail(user.email) }}</div>
+          </div>
+        </div>
+
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+          <!-- Nome -->
+          <div class="field">
+            <label>Nome completo</label>
+            <input
+              type="text"
+              formControlName="name"
+              placeholder="Nome do usuário"
+              [class.invalid]="name.invalid && name.touched"
+            />
+            @if (name.invalid && name.touched) {
+              <small class="field-error">Nome obrigatório (mín. 3 caracteres)</small>
+            }
+          </div>
+
+          <!-- Role + Senha -->
+          <div class="field-row">
+            <div class="field">
+              <label>Perfil</label>
+              <select formControlName="role">
+                @for (r of roles; track r.value) {
+                  <option [value]="r.value">{{ r.label }}</option>
+                }
+              </select>
+            </div>
+            <div class="field">
+              <label>Nova senha <span class="optional">(opcional)</span></label>
+              <input
+                type="password"
+                formControlName="password"
+                placeholder="••••••••"
+                [class.invalid]="password.invalid && password.touched"
+              />
+              @if (password.invalid && password.touched) {
+                <small class="field-error">Mínimo 6 caracteres</small>
+              }
+            </div>
+          </div>
+
+          <!-- Toggle Status -->
+          <div class="field">
+            <label>Status</label>
+            <div class="toggle-wrap">
+              <div>
+                <div class="toggle-label">{{ form.value.active ? 'Usuário ativo' : 'Usuário inativo' }}</div>
+                <div class="toggle-sub">{{ form.value.active ? 'Permite acesso ao sistema' : 'Acesso bloqueado' }}</div>
+              </div>
+              <div
+                class="toggle"
+                [class.on]="form.value.active"
+                (click)="form.patchValue({ active: !form.value.active })"
+              >
+                <div class="toggle-dot"></div>
+              </div>
+            </div>
+          </div>
+
+        </form>
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer">
+        <button class="btn btn-cancel" (click)="close()">Cancelar</button>
+        <button class="btn btn-save" (click)="onSubmit()" [disabled]="loading">
+          @if (loading) {
+            <span class="btn-spinner"></span>
+          } @else {
+            Salvar alterações
+          }
+        </button>
+      </div>
+
+    </div>
+  </div>
+}
