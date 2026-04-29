@@ -107,7 +107,6 @@
   gap: 12px;
 }
 
-// Toggle
 .toggle-wrap {
   display: flex;
   align-items: center;
@@ -144,7 +143,6 @@
   &.on .toggle-dot { transform: translateX(18px); }
 }
 
-// Footer
 .modal-footer {
   display: flex;
   align-items: center;
@@ -184,7 +182,12 @@
 }
 
 .btn-spinner {
-  width: 14px; height: 14px;
-  border: 2px solid rgba(255,255,255,0.3);
-  border-top-color {color: #fff} ;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
 }
+
+@keyframes spin { to { transform: rotate(360deg); } }

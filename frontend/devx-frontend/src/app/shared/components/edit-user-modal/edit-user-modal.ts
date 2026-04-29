@@ -50,16 +50,12 @@ export class EditUserModal implements OnChanges {
     }
   }
 
-  get name() {
-    return this.form.get('name')!;
-  }
-
-  get password() {
-    return this.form.get('password')!;
-  }
+  get name() { return this.form.get('name')!; }
+  get password() { return this.form.get('password')!; }
 
   close() {
     this.visibleChange.emit(false);
+    this.form.reset();
   }
 
   truncateEmail(email: string): string {
@@ -72,19 +68,25 @@ export class EditUserModal implements OnChanges {
 
     this.loading = true;
 
-    const payload = {
-      ...this.form.value,
-      id: this.user.id
+    const payload: any = {
+      name: this.form.value.name,
+      role: this.form.value.role,
+      active: this.form.value.active
     };
 
-    this.userService.update(this.user.id, this.form.value).subscribe({
+    if (this.form.value.password && this.form.value.password.trim() !== '') {
+      payload.password = this.form.value.password;
+    }
+
+    this.userService.update(this.user.id, payload).subscribe({
       next: () => {
         this.loading = false;
         this.saved.emit();
         this.close();
       },
-      error: () => {
+      error: (err) => {
         this.loading = false;
+        console.error('Erro ao atualizar usuário', err);
       }
     });
   }

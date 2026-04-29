@@ -6,3 +6,16 @@ domain/
 dto/
 security/
 exception/
+
+
+Cadastro Inicial de Usuarios no Banco 
+INSERT INTO users (name, email, password, role, active)
+VALUES (
+  'Admin',
+  'admin@devx.com',
+  '$2a$10$HASH_BCRYPT',
+  'ROLE_ADMIN',
+  true
+);
+
+SELECT * FROM USERS;
