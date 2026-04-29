@@ -1,0 +1,9 @@
+--2026-04-23 20:38:22--  https://go.microsoft.com/fwlink/?LinkID=760868
+Resolvendo go.microsoft.com (go.microsoft.com)... 2600:1419:4e00:988::2c1a, 2600:1419:4e00:98b::2c1a, 2.17.129.167
+Conectando-se a go.microsoft.com (go.microsoft.com)|2600:1419:4e00:988::2c1a|:443... conectado.
+A requisição HTTP foi enviada, aguardando resposta... 302 Moved Temporarily
+Localização: https://update.code.visualstudio.com/latest/linux-deb-x64/stable [redirecionando]
+--2026-04-23 20:38:23--  https://update.code.visualstudio.com/latest/linux-deb-x64/stable
+Resolvendo update.code.visualstudio.com (update.code.visualstudio.com)... 2603:1061:14:126::1, 150.171.110.40
+Conectando-se a update.code.visualstudio.com (update.code.visualstudio.com)|2603:1061:14:126::1|:443... conectado.
+Não foi possível estabelecer conexão segura (SSL).

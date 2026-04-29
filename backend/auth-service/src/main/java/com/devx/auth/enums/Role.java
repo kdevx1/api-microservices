@@ -5,6 +5,7 @@ import java.util.List;
 public enum Role {
 
     ROLE_USER(List.of("READ")),
+    ROLE_MANAGER(List.of("READ", "WRITE", "ALTER")),
     ROLE_ADMIN(List.of("READ", "WRITE", "DELETE", "ALTER"));
 
     private final List<String> permissions;

@@ -1,0 +1,124 @@
+.sidebar {
+  width: 220px;
+  background: #26215C;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  flex-shrink: 0;
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 1.25rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+  .brand-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #534AB7, #185FA5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    svg { width: 16px; height: 16px; }
+  }
+
+  .brand-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+  }
+}
+
+.sidebar-menu {
+  flex: 1;
+  padding: 1rem 0;
+  overflow-y: auto;
+}
+
+.menu-label {
+  display: block;
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.35);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 0 1rem;
+  margin: 1rem 0 0.4rem;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0.6rem 1rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 13px;
+  border-left: 3px solid transparent;
+  text-decoration: none;
+  transition: all 0.2s;
+  cursor: pointer;
+
+  &:hover {
+    color: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  &.active {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.08);
+    border-left-color: #7F77DD;
+  }
+}
+
+.menu-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.sidebar-footer {
+  padding: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #534AB7, #185FA5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.user-details {
+  .user-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: #fff;
+  }
+
+  .user-role {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  .user-email {
+    font-size: 11px;
+    color: #534AB7(255, 255, 255, 0.4);
+  }
+}

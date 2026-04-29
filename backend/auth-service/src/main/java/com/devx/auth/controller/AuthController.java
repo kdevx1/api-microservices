@@ -1,15 +1,22 @@
 package com.devx.auth.controller;
 
-import org.springframework.web.server.ResponseStatusException;
-import org.springframework.http.HttpStatus;
-import com.devx.auth.security.JwtService;
-import com.devx.auth.domain.User;
-import com.devx.auth.dto.LoginRequest;
-import com.devx.auth.service.UserService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.devx.auth.domain.User;
 import com.devx.auth.dto.AuthResponse;
+import com.devx.auth.dto.DashboardResponse;
+import com.devx.auth.dto.LoginRequest;
+import com.devx.auth.security.JwtService;
+import com.devx.auth.service.UserService;
+
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -20,28 +27,36 @@ public class AuthController {
     private final JwtService jwtService;
     private final BCryptPasswordEncoder passwordEncoder;
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @GetMapping("/dashboard")
+    public ResponseEntity<DashboardResponse> dashboard() {
+        try {
+            DashboardResponse response = userService.getDashboard();
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
     @PostMapping("/login")
-    public AuthResponse login(@RequestBody LoginRequest request) {
+    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
 
         User user = userService.findByEmail(request.email());
 
-        if (user == null) {
-            throw new ResponseStatusException(
-                HttpStatus.UNAUTHORIZED,
-                "Invalid credentials"
-            );
+        if (!Boolean.TRUE.equals(user.getActive())) {
+            return ResponseEntity.status(403).build();
         }
 
         if (!passwordEncoder.matches(request.password(), user.getPassword())) {
-            throw new ResponseStatusException(
-                HttpStatus.UNAUTHORIZED,
-                "Invalid credentials"
-            );
+            return ResponseEntity.status(401).build();
         }
+
+        // 🔥 Atualiza último login (novo fluxo)
+        userService.updateLastLogin(user.getEmail());
 
         String token = jwtService.generateToken(user);
 
-        return new AuthResponse(token, "Bearer");
+        return ResponseEntity.ok(new AuthResponse(token, "Bearer"));
     }
-    
 }

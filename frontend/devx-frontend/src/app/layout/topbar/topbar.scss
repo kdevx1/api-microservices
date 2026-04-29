@@ -1,0 +1,53 @@
+.topbar {
+  height: 56px;
+  background: #fff;
+  border-bottom: 0.5px solid #D3D1C7;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  flex-shrink: 0;
+}
+
+.topbar-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #26215C;
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.topbar-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: #F1EFE8;
+  border: 0.5px solid #D3D1C7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+  position: relative;
+
+  svg { width: 16px; height: 16px; }
+
+  &:hover { background: #D3D1C7; }
+}
+
+.badge-wrap { position: relative; }
+
+.badge-dot {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #E24B4A;
+  border: 1.5px solid #fff;
+}

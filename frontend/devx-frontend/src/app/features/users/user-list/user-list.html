@@ -1,0 +1,141 @@
+<div class="dashboard">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div class="page-title">Dashboard</div>
+    <div class="page-sub">Visão geral do sistema</div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat-card">
+      <div class="stat-icon purple">
+        <svg viewBox="0 0 20 20" fill="none">
+          <circle cx="8" cy="7" r="3.5" stroke="#534AB7" stroke-width="1.5"/>
+          <path d="M2 17c0-3.87 2.69-7 6-7s6 3.13 6 7" stroke="#534AB7" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M14 8l1.5 1.5L18 7" stroke="#534AB7" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="stat-info">
+        <div class="stat-label">Total de Usuários</div>
+        <div class="stat-value">{{ dashboard()?.totalUsers ?? 0 }}</div>
+        <div class="stat-sub">cadastrados no sistema</div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon blue">
+        <svg viewBox="0 0 20 20" fill="none">
+          <circle cx="10" cy="10" r="7.5" stroke="#185FA5" stroke-width="1.5"/>
+          <path d="M10 6v4l2.5 2.5" stroke="#185FA5" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="stat-info">
+        <div class="stat-label">Usuários Ativos</div>
+        <div class="stat-value">{{ dashboard()?.activeUsers ?? 0 }}</div>
+        <div class="stat-sub" style="color:#185FA5">
+          {{ dashboard() ? ((dashboard()!.activeUsers / dashboard()!.totalUsers) * 100 | number:'1.0-0') + '% do total' : '' }}
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon green">
+        <svg viewBox="0 0 20 20" fill="none">
+          <rect x="3" y="3" width="14" height="14" rx="3" stroke="#3B6D11" stroke-width="1.5"/>
+          <path d="M7 10l2.5 2.5L13 8" stroke="#3B6D11" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="stat-info">
+        <div class="stat-label">Administradores</div>
+        <div class="stat-value">{{ dashboard()?.admins ?? 0 }}</div>
+        <div class="stat-sub" style="color:#3B6D11">Nível máximo</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabela -->
+  <div class="table-card">
+    <div class="table-header">
+      <span class="table-title">Usuários</span>
+      <div class="search-box">
+        <svg viewBox="0 0 16 16" fill="none">
+          <circle cx="7" cy="7" r="4.5" stroke="#888780" stroke-width="1.5"/>
+          <path d="M10.5 10.5l3 3" stroke="#888780" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <input
+          type="text"
+          placeholder="Buscar por nome..."
+          [(ngModel)]="searchName"
+          (input)="onSearch()"
+        />
+      </div>
+    </div>
+
+    <div class="table-head">
+      <span>Nome</span>
+      <span>E-mail</span>
+      <span>Perfil</span>
+      <span>Status</span>
+      <span>Ações</span>
+    </div>
+
+    <!-- Loading -->
+    @if (loading()) {
+      <div class="table-loading">
+        <span class="spinner"></span>
+        Carregando...
+      </div>
+    }
+
+    <!-- Rows -->
+    @if (!loading()) {
+      @for (user of users(); track user.id) {
+        <div class="table-row">
+          <div class="user-cell">
+            <div class="row-avatar">{{ getInitials(user.name) }}</div>
+            <span class="row-name">{{ user.name }}</span>
+          </div>
+          <span class="row-email">{{ user.email }}</span>
+          <span class="badge" [class.admin]="user.role === 'ROLE_ADMIN'" [class.user]="user.role !== 'ROLE_ADMIN'">
+            {{ user.role === 'ROLE_ADMIN' ? 'ADMIN' : 'USER' }}
+          </span>
+          <span class="badge" [class.active]="user.active" [class.inactive]="!user.active">
+            {{ user.active ? 'Ativo' : 'Inativo' }}
+          </span>
+          <div class="actions">
+            <button class="action-btn edit" title="Editar" (click)="toggleActive(user)">
+              <svg viewBox="0 0 16 16" fill="none">
+                <path d="M2 11.5V14h2.5l7-7L9 4.5l-7 7z" stroke="#534AB7" stroke-width="1.2"/>
+              </svg>
+            </button>
+            <button class="action-btn delete" title="Deletar" (click)="deleteUser(user)">
+              <svg viewBox="0 0 16 16" fill="none">
+                <path d="M3 4h10M6 4V3h4v1M5 4v8h6V4" stroke="#E24B4A" stroke-width="1.2" stroke-linecap="round"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      }
+
+      @empty {
+        <div class="table-empty">Nenhum usuário encontrado.</div>
+      }
+    }
+
+    <!-- Footer / Paginação -->
+    <div class="table-footer">
+      <span>Mostrando {{ users().length }} de {{ totalElements() }} usuários</span>
+      <div class="pagination">
+        <button class="page-btn" (click)="goToPage(currentPage() - 1)" [disabled]="currentPage() === 0">‹</button>
+        @for (page of getPages(); track page) {
+          <button class="page-btn" [class.active]="page === currentPage()" (click)="goToPage(page)">
+            {{ page + 1 }}
+          </button>
+        }
+        <button class="page-btn" (click)="goToPage(currentPage() + 1)" [disabled]="currentPage() === totalPages() - 1">›</button>
+      </div>
+    </div>
+  </div>
+
+</div>

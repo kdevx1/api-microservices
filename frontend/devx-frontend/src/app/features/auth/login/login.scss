@@ -1,0 +1,219 @@
+.login-wrapper {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #534AB7 0%, #185FA5 50%, #3C3489 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.bg-circle {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  pointer-events: none;
+
+  &--top {
+    width: 400px;
+    height: 400px;
+    top: -120px;
+    right: -120px;
+  }
+
+  &--bottom {
+    width: 300px;
+    height: 300px;
+    bottom: -80px;
+    left: -80px;
+  }
+}
+
+.login-card {
+  background: rgba(255, 255, 255, 0.97);
+  border-radius: 20px;
+  padding: 2.5rem 2rem;
+  width: 100%;
+  max-width: 400px;
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.18);
+}
+
+// Brand
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 2rem;
+}
+
+.brand-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #534AB7, #185FA5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+.brand-name {
+  font-size: 20px;
+  font-weight: 600;
+  color: #26215C;
+}
+
+// Títulos
+.login-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: #26215C;
+  margin: 0 0 4px;
+}
+
+.login-subtitle {
+  font-size: 14px;
+  color: #888780;
+  margin: 0 0 1.75rem;
+}
+
+// Fields
+.field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.25rem;
+
+  label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #5F5E5A;
+    margin-bottom: 6px;
+  }
+
+  input.p-inputtext {
+    width: 100%;
+    height: 42px;
+    border: 1px solid #D3D1C7;
+    border-radius: 8px;
+    padding: 0 14px;
+    font-size: 14px;
+    color: #2C2C2A;
+    background: #F1EFE8;
+    transition: border-color 0.2s, background 0.2s;
+
+    &:focus {
+      border-color: #534AB7;
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(83, 74, 183, 0.12);
+    }
+
+    &.ng-invalid {
+      border-color: #E24B4A;
+    }
+  }
+}
+
+.field-error {
+  font-size: 12px;
+  color: #E24B4A;
+  margin-top: 4px;
+}
+
+// Forgot
+.forgot {
+  text-align: right;
+  margin-bottom: 1.5rem;
+
+  a {
+    font-size: 13px;
+    color: #534AB7;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+// Botão
+.btn-login {
+  width: 100%;
+  height: 44px;
+  border: none;
+  border-radius: 8px;
+  background: #26215C;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  letter-spacing: 0.3px;
+  transition: background 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover:not(:disabled) {
+    background: #3C3489;
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+}
+
+.btn-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+// Divider
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 1.5rem 0;
+}
+
+.divider-line {
+  flex: 1;
+  height: 1px;
+  background: #D3D1C7;
+}
+
+.divider-text {
+  font-size: 12px;
+  color: #B4B2A9;
+}
+
+// Register
+.register {
+  text-align: center;
+  font-size: 13px;
+  color: #888780;
+
+  a {
+    color: #534AB7;
+    font-weight: 500;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

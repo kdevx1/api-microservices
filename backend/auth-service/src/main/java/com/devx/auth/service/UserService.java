@@ -1,181 +1,228 @@
 package com.devx.auth.service;
 
-import com.devx.auth.domain.User;
-import com.devx.auth.enums.Role;
-import com.devx.auth.especification.UserSpecification;
-import com.devx.auth.repository.UserRepository;
-import com.devx.auth.dto.PageResponse;
-import com.devx.auth.dto.UpdateUserRequest;
-import com.devx.auth.dto.UserRequest;
-import com.devx.auth.dto.UserResponse;
-
-import lombok.RequiredArgsConstructor;
-
-import java.util.List;
+import java.time.LocalDateTime;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import com.devx.auth.domain.User;
+import com.devx.auth.dto.AuthResponse;
+import com.devx.auth.dto.DashboardResponse;
+import com.devx.auth.dto.LoginRequest;
+import com.devx.auth.dto.PageResponse;
+import com.devx.auth.dto.UpdateUserRequest;
+import com.devx.auth.dto.UserRequest;
+import com.devx.auth.dto.UserResponse;
+import com.devx.auth.enums.Role;
+import com.devx.auth.especification.UserSpecification;
+import com.devx.auth.exception.BusinessException;
+import com.devx.auth.repository.UserRepository;
+import com.devx.auth.security.JwtService;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
-    
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
-    public List<UserResponse> findAll() {
-        return userRepository.findAll()
-            .stream()
-            .map(user -> new UserResponse(
-                user.getId(),
-                user.getName(),
-                user.getEmail(),
-                user.getRole().name()
-            ))  
-            .toList();
+    // =========================
+    // LOGIN
+    // =========================
+    public AuthResponse login(LoginRequest request) {
+
+        User user = findByEmail(request.email());
+
+        if (!Boolean.TRUE.equals(user.getActive())) {
+            throw new BusinessException("Usuário inativo", 403);
+        }
+
+        if (!passwordEncoder.matches(request.password(), user.getPassword())) {
+            throw new BusinessException("Credenciais inválidas", 401);
+        }
+
+        updateLastLogin(user.getEmail());
+
+        String token = jwtService.generateToken(user);
+
+        return new AuthResponse(token, "Bearer");
     }
 
+    // =========================
+    // FIND
+    // =========================
+    public User findByEmail(String email) {
+        return userRepository.findByEmailIgnoreCase(email.trim().toLowerCase())
+                .orElseThrow(() -> new BusinessException("Usuário não encontrado", 404));
+    }
+
+    // =========================
+    // CREATE
+    // =========================
     public UserResponse create(UserRequest request) {
 
-        if (userRepository.existsByEmailIgnoreCase(request.email())){
-            throw new RuntimeException("Email already exists");
+        String email = request.email().trim().toLowerCase();
+
+        if (userRepository.existsByEmailIgnoreCase(email)) {
+            throw new BusinessException("Email já cadastrado", 409);
         }
 
-        User user = new User();
+        User user = User.builder()
+                .name(request.name())
+                .email(email)
+                .password(passwordEncoder.encode(request.password()))
+                .role(parseRole(request.role()))
+                .active(true)
+                .build();
 
-        user.setName(request.name()); 
-        user.setEmail(request.email());
-        user.setPassword(passwordEncoder.encode(request.password()));
-        Role role;
-        try {
-            role = request.role() != null
-                    ? Role.valueOf(request.role())
-                    : Role.ROLE_ADMIN;
-        } catch (IllegalArgumentException e) {
-            throw new RuntimeException("Invalid role: " + request.role());
-        }
-
-        user.setRole(role);
-        System.out.println("ROLE: " + user.getRole());
-        System.out.println("AUTHORITIES: " + user.getAuthorities());
-        userRepository.save(user);
-
-        return new UserResponse(
-                user.getId(),
-                user.getName(),
-                user.getEmail(),
-                user.getRole().name()
-        );
+        return map(userRepository.save(user));
     }
 
+    // =========================
+    // UPDATE
+    // =========================
     public UserResponse update(Long id, UpdateUserRequest request) {
 
         User user = userRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new BusinessException("Usuário não encontrado", 404));
 
-        if (request.name() != null) {
+        if (request.name() != null && !request.name().isBlank()) {
             user.setName(request.name());
         }
-
-        if (request.role() != null) {
-            user.setRole(Role.valueOf(request.role()));
+        if (request.role() != null && !request.role().isBlank()) {
+            user.setRole(parseRole(request.role()));
+        }
+        if (request.active() != null) {
+            user.setActive(request.active());
         }
 
+        return map(userRepository.save(user));
+    }
+
+    // =========================
+    // DELETE (SOFT)
+    // =========================
+    public void delete(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new BusinessException("Usuário não encontrado", 404));
+
+        user.setActive(false);
         userRepository.save(user);
-
-        return new UserResponse(
-            user.getId(),
-            user.getName(),
-            user.getEmail(),
-            user.getRole().name()
-        );
-    }
-    public List<User> search(String email, String name, String role) {
-        Specification<User> spec = Specification
-                .where(UserSpecification.emailEquals(email))
-                .and(UserSpecification.nameContains(name))
-                .and(UserSpecification.roleEquals(role));
-
-        return userRepository.findAll(spec);
     }
 
+    // =========================
+    // TOGGLE ACTIVE
+    // =========================
+    public UserResponse toggleActive(Long id) {
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new BusinessException("Usuário não encontrado", 404));
+
+        user.setActive(!Boolean.TRUE.equals(user.getActive()));
+
+        return map(userRepository.save(user));
+    }
+
+    // =========================
+    // SEARCH
+    // =========================
     public PageResponse<UserResponse> search(
-            String email,
-            String name,
-            String role,
+            String email, String name, String role, Boolean active,
+            LocalDateTime createdFrom, LocalDateTime createdTo,
             Pageable pageable
     ) {
-
         Specification<User> spec = Specification
                 .where(UserSpecification.emailEquals(email))
                 .and(UserSpecification.nameContains(name))
-                .and(UserSpecification.roleEquals(role));
+                .and(UserSpecification.roleEquals(role))
+                .and(UserSpecification.isActive(active))
+                .and(UserSpecification.createdBetween(createdFrom, createdTo));
 
-        Page<User> pageResult = userRepository.findAll(spec, pageable);
-
-        List<UserResponse> content = pageResult.getContent()
-                .stream()
-                .map(user -> new UserResponse(
-                        user.getId(),
-                        user.getName(),
-                        user.getEmail(),
-                        user.getRole().name()
-                ))
-                .toList();
+        Page<User> page = userRepository.findAll(spec, pageable);
 
         return new PageResponse<>(
-                content,
-                pageResult.getNumber(),
-                pageResult.getSize(),
-                pageResult.getTotalElements(),
-                pageResult.getTotalPages()
+                page.getContent().stream().map(this::map).toList(),
+                page.getNumber(),
+                page.getSize(),
+                page.getTotalElements(),
+                page.getTotalPages()
         );
     }
-    
-    public boolean existsByEmail(String email) {
-        System.out.println("EMAIL DO TOKEN: " + email);
-        return userRepository.existsByEmailIgnoreCase(email);
-    }
 
-   public User findByEmail(String email) {
-    String normalizedEmail = email.trim().toLowerCase();
-
-    // System.out.println("🔍 BUSCANDO: [" + normalizedEmail + "]");
-    // System.out.println("📦 USERS NO BANCO: " + userRepository.findAll());
-
-    return userRepository.findByEmailIgnoreCase(normalizedEmail)
-        .orElseThrow(() -> new RuntimeException("User not found for email: " + normalizedEmail));
-}
-
-    public void updateAvatar(String avatarUrl) {
-        String email = SecurityContextHolder.getContext()
-            .getAuthentication()
-            .getName();
-
-        User user = userRepository.findByEmailIgnoreCase(email)
-            .orElseThrow(() -> new RuntimeException("User not found: " + email));
+    // =========================
+    // AVATAR
+    // =========================
+    public void updateAvatar(Long userId, String avatarUrl) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BusinessException("Usuário não encontrado", 404));
 
         user.setAvatar(avatarUrl);
         userRepository.save(user);
+    }
+
+    // =========================
+    // LAST LOGIN
+    // =========================
+    public void updateLastLogin(String email) {
+        User user = findByEmail(email);
+        user.setLastLoginAt(LocalDateTime.now());
+        userRepository.save(user);
+    }
+
+    // =========================
+    // DASHBOARD
+    // =========================
+    public DashboardResponse getDashboard() {
+        
+        long total = userRepository.count();
+        long active = userRepository.countByActiveTrue();
+        long admins = userRepository.countByRole(Role.ROLE_ADMIN);
+
+        return new DashboardResponse(total, active, admins);
+    }
+
+    // =========================
+    // UTILS
+    // =========================
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmailIgnoreCase(email.trim().toLowerCase());
     }
 
     public User save(User user) {
         return userRepository.save(user);
     }
 
-    public void delete(Long id) {
-
-        if (!userRepository.existsById(id)) {
-            throw new RuntimeException("User not found");
-        }
-
-        userRepository.deleteById(id);
+    public long countUsers() {
+        return userRepository.count();
     }
 
+    // =========================
+    // INTERNOS
+    // =========================
+    private Role parseRole(String role) {
+        if (role == null || role.isBlank()) return Role.ROLE_USER;
+        try {
+            return Role.valueOf(role);
+        } catch (Exception e) {
+            return Role.ROLE_USER;
+        }
+    }
 
+    public UserResponse map(User user) {
+        return new UserResponse(
+                user.getId(),
+                user.getName(),
+                user.getEmail(),
+                user.getRole().name(),
+                user.getActive(),
+                user.getCreatedAt(),
+                user.getLastLoginAt()
+        );
+    }
 }
