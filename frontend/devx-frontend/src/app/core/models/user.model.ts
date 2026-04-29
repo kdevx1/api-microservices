@@ -18,6 +18,7 @@ export interface UserResponse {
   email:string;
   role: string;
   active: boolean;
+  avatar: string;
   createdAt: string;
   lastLoginAt?: string;
 }

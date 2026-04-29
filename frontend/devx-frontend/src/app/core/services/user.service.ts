@@ -60,4 +60,8 @@ export class UserService {
       params: { email }
     });
   }
+
+  uploadAvatar(formData: FormData) {
+    return this.http.post<{ url: string }>(`${this.api}/avatar`, formData);
+  }
 }
