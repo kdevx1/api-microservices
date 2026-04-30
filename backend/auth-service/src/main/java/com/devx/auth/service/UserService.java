@@ -222,7 +222,8 @@ public class UserService {
                 user.getRole().name(),
                 user.getActive(),
                 user.getCreatedAt(),
-                user.getLastLoginAt()
+                user.getLastLoginAt(),
+                user.getAvatar() 
         );
     }
 }

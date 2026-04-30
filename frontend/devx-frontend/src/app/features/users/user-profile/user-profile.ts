@@ -160,8 +160,9 @@ export class UserProfile implements OnInit {
     formData.append('file', file);
 
     this.userService.uploadAvatar(formData).subscribe({
-      next: (res: any) => {
-        this.user.update(u => u ? { ...u, avatar: res.url } : u);
+      next: () => {
+        // Recarrega o perfil completo do backend
+        this.loadProfile();
         this.uploadingAvatar.set(false);
       },
       error: () => this.uploadingAvatar.set(false)

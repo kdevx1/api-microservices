@@ -3,8 +3,10 @@
 /* Hero */
 .hero {
   background: linear-gradient(135deg, #26215C 0%, #534AB7 50%, #185FA5 100%);
-  border-radius: 16px; padding: 1.75rem 2rem 5.5rem;
-  position: relative; overflow: hidden;
+  border-radius: 16px;
+  padding: 1.75rem 2rem 4rem; // ✅ reduziu de 5.5rem para 4rem
+  position: relative;
+  overflow: hidden;
 
   &-c1 { position: absolute; width: 250px; height: 250px; border-radius: 50%; background: rgba(255,255,255,0.05); top: -80px; right: -60px; }
   &-c2 { position: absolute; width: 150px; height: 150px; border-radius: 50%; background: rgba(255,255,255,0.04); bottom: -50px; left: 30%; }
@@ -15,13 +17,32 @@
 
 /* Avatar Float */
 .avatar-float {
-  display: flex; align-items: flex-end; justify-content: space-between;
-  padding: 0 2rem; margin-top: -52px; margin-bottom: 1.5rem; position: relative; z-index: 2;
+  display: flex;
+  align-items: flex-end;
+  padding: 0 2rem;
+  margin-top: -52px;
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 2;
 }
 
-.avatar-left { display: flex; align-items: flex-end; gap: 1.25rem; }
+.avatar-left {
+  display: flex;
+  align-items: flex-end;
+  gap: 1.25rem;
+  background: #F1EFE8;
+  border-radius: 0 12px 0 0;
+  padding: 0 1rem 0 0;
+}
 
-.avatar-wrap { position: relative; }
+.avatar-info {
+  padding-bottom: 6px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  background: #F1EFE8;
+  padding: 0 1rem 6px 0;
+}
 
 .avatar-img {
   width: 84px; height: 84px; border-radius: 50%;
@@ -44,13 +65,50 @@
   &:hover { background: #26215C; }
 }
 
-.avatar-info { padding-bottom: 8px; }
-.avatar-name { font-size: 19px; font-weight: 700; color: #26215C; }
-.avatar-meta { display: flex; align-items: center; gap: 8px; margin-top: 5px; flex-wrap: wrap; }
-.avatar-email { font-size: 12px; color: #888780; }
-.badge-role { font-size: 10px; padding: 2px 10px; border-radius: 20px; background: #EEEDFE; color: #534AB7; font-weight: 600; }
-.badge-active { display: flex; align-items: center; gap: 4px; font-size: 10px; color: #3B6D11; font-weight: 500; }
-.active-dot { width: 6px; height: 6px; border-radius: 50%; background: #3B6D11; }
+.avatar-name {
+  font-size: 19px;
+  font-weight: 700;
+  color: #26215C;
+  line-height: 1.2;
+}
+
+.avatar-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  flex-wrap: wrap;
+}
+
+.avatar-email {
+  font-size: 12px;
+  color: #888780;
+}
+
+.badge-role {
+  font-size: 10px;
+  padding: 2px 10px;
+  border-radius: 20px;
+  background: #EEEDFE;
+  color: #534AB7;
+  font-weight: 600;
+}
+
+.badge-active {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  color: #3B6D11;
+  font-weight: 500;
+}
+
+.active-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #3B6D11;
+}
 
 /* Skeleton */
 .skeleton-name { width: 160px; height: 20px; border-radius: 6px; background: #D3D1C7; animation: pulse 1.2s infinite; }

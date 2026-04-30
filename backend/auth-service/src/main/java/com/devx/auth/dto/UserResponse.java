@@ -9,5 +9,6 @@ public record UserResponse(
     String role,
     Boolean active,
     LocalDateTime createdAt,
-    LocalDateTime lastLoginAt
+    LocalDateTime lastLoginAt,
+    String avatar 
 ) {}
