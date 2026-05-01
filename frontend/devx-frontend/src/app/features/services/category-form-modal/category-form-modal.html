@@ -1,0 +1,67 @@
+@if (visible) {
+  <div class="overlay" (click)="close()">
+    <div class="modal" (click)="$event.stopPropagation()">
+
+      <div class="modal-header">
+        <div>
+          <div class="modal-title">{{ category ? 'Editar Categoria' : 'Nova Categoria' }}</div>
+          <div class="modal-sub">Organize seus serviços por categoria</div>
+        </div>
+        <button class="close-btn" (click)="close()">
+          <svg viewBox="0 0 14 14" fill="none">
+            <path d="M1 1l12 12M13 1L1 13" stroke="#5F5E5A" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <form [formGroup]="form">
+
+          <div class="field">
+            <label>Nome da categoria</label>
+            <input type="text" formControlName="name" placeholder="Ex: Saúde, Exames, Estética..." [class.invalid]="name.invalid && name.touched"/>
+            @if (name.invalid && name.touched) {
+              <small class="field-error">Nome obrigatório (mín. 2 caracteres)</small>
+            }
+          </div>
+
+          <div class="field">
+            <label>Descrição <span class="optional">(opcional)</span></label>
+            <input type="text" formControlName="description" placeholder="Descreva esta categoria..." />
+          </div>
+
+          <div class="field">
+            <label>Cor de identificação</label>
+            <div class="color-picker">
+              @for (color of colorPresets; track color) {
+                <div
+                  class="color-dot"
+                  [style.background]="color"
+                  [class.selected]="selectedColor === color"
+                  (click)="selectColor(color)"
+                ></div>
+              }
+              <div class="color-custom">
+                <input type="color" formControlName="color" />
+              </div>
+            </div>
+            <div class="color-preview">
+              <div class="preview-dot" [style.background]="selectedColor"></div>
+              <span>{{ selectedColor }}</span>
+            </div>
+          </div>
+
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-cancel" (click)="close()">Cancelar</button>
+        <button class="btn btn-save" (click)="onSubmit()" [disabled]="loading">
+          @if (loading) { <span class="btn-spinner"></span> }
+          @else { {{ category ? 'Salvar alterações' : 'Criar categoria' }} }
+        </button>
+      </div>
+
+    </div>
+  </div>
+}

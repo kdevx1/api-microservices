@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import static org.springframework.security.config.Customizer.withDefaults;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -54,6 +55,8 @@ public class SecurityConfig {
                 .requestMatchers(PUBLIC_ROUTES).permitAll()
                 .requestMatchers("/api/v1/admin/**").hasAuthority("ROLE_ADMIN")
                 .requestMatchers("/api/v1/manager/**").hasAnyAuthority("ROLE_MANAGER", "ROLE_ADMIN")    
+                .requestMatchers(HttpMethod.GET, "/api/v1/services/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/v1/categories/**").permitAll()
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
