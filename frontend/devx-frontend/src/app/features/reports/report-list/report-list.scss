@@ -1,0 +1,86 @@
+.page { padding: 0; }
+
+.page-header {
+  display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;
+  .page-title { font-size: 20px; font-weight: 600; color: #26215C; }
+  .page-sub { font-size: 13px; color: #888780; margin-top: 2px; }
+}
+
+.info-banner {
+  display: flex; align-items: flex-start; gap: 12px;
+  background: #E3F0FB; border: 0.5px solid #B8D4EE; border-radius: 12px;
+  padding: 1rem 1.25rem; margin-bottom: 1.5rem;
+
+  .info-icon { width: 32px; height: 32px; flex-shrink: 0; svg { width: 100%; height: 100%; } }
+  .info-title { font-size: 13px; font-weight: 600; color: #185FA5; margin-bottom: 3px; }
+  .info-desc { font-size: 12px; color: #2C6A9B; line-height: 1.5; }
+}
+
+.cards-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 1.5rem;
+}
+
+.report-card {
+  background: #fff; border-radius: 14px; border: 0.5px solid #D3D1C7;
+  overflow: hidden; transition: box-shadow 0.2s;
+  &:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+}
+
+.card-top {
+  display: flex; align-items: flex-start; gap: 14px; padding: 1.5rem;
+}
+
+.card-icon {
+  width: 48px; height: 48px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  svg { width: 22px; height: 22px; }
+}
+
+.card-title { font-size: 15px; font-weight: 600; color: #26215C; margin-bottom: 4px; }
+.card-desc { font-size: 12px; color: #888780; line-height: 1.4; }
+
+.card-divider { height: 0.5px; background: #D3D1C7; }
+
+.card-actions {
+  display: flex; gap: 10px; padding: 1.25rem;
+}
+
+.export-btn {
+  flex: 1; height: 40px; border-radius: 8px; font-size: 13px; font-weight: 500;
+  cursor: pointer; border: none; display: flex; align-items: center; justify-content: center;
+  gap: 7px; transition: all 0.2s;
+  svg { width: 16px; height: 16px; }
+
+  &.excel {
+    background: #EAF3DE; color: #3B6D11; border: 0.5px solid #C5DFA8;
+    &:hover:not(:disabled) { background: #D4EDBB; }
+  }
+
+  &.pdf {
+    background: #FDE8E8; color: #C0392B; border: 0.5px solid #F5BCBC;
+    &:hover:not(:disabled) { background: #FAD0D0; }
+  }
+
+  &:disabled { opacity: 0.6; cursor: not-allowed; }
+}
+
+.btn-spinner {
+  width: 14px; height: 14px; border: 2px solid rgba(59, 109, 17, 0.3);
+  border-top-color: #3B6D11; border-radius: 50%; animation: spin 0.7s linear infinite;
+}
+
+.btn-spinner-red {
+  border-color: rgba(192, 57, 43, 0.3);
+  border-top-color: #C0392B;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.tip-card {
+  display: flex; align-items: center; gap: 10px;
+  background: #FEF3E2; border: 0.5px solid #F5D9A0; border-radius: 10px;
+  padding: 0.875rem 1.25rem;
+
+  .tip-icon { width: 20px; height: 20px; flex-shrink: 0; svg { width: 100%; height: 100%; } }
+  span { font-size: 12px; color: #8B5E1A; }
+}

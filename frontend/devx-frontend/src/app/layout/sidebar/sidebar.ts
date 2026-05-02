@@ -43,6 +43,12 @@ export class Sidebar {
       items: [
         { label: 'Perfil', icon: 'profile', route: '/profile' }
       ]
+    },
+    {
+      label: 'Relatórios',
+      items: [
+        { label: 'Exportar', icon: 'reports', route: '/reports' }
+      ]
     }
   ];
 }
