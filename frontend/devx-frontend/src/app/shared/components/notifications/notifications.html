@@ -1,0 +1,115 @@
+<div class="notif-wrap">
+
+  <!-- Botão sino -->
+  <button class="topbar-btn" (click)="toggle()">
+    <svg viewBox="0 0 16 16" fill="none">
+      <path d="M8 1a5 5 0 015 5c0 2.5.5 4 1 5H2c.5-1 1-2.5 1-5a5 5 0 015-5z" stroke="#5F5E5A" stroke-width="1.5"/>
+      <path d="M6.5 13a1.5 1.5 0 003 0" stroke="#5F5E5A" stroke-width="1.5"/>
+    </svg>
+    @if (notificationService.unreadCount() > 0) {
+      <span class="notif-count">
+        {{ notificationService.unreadCount() > 9 ? '9+' : notificationService.unreadCount() }}
+      </span>
+    }
+  </button>
+
+  <!-- Dropdown -->
+  @if (isOpen()) {
+    <div class="dropdown">
+
+      <!-- Header -->
+      <div class="dd-header">
+        <div class="dd-header-left">
+          <span class="dd-title">Notificações</span>
+          @if (notificationService.unreadCount() > 0) {
+            <span class="dd-badge">{{ notificationService.unreadCount() }} novas</span>
+          }
+        </div>
+        @if (notificationService.unreadCount() > 0) {
+          <span class="dd-mark-all" (click)="markAllAsRead()">Marcar todas como lidas</span>
+        }
+      </div>
+
+      <!-- Tabs -->
+      <div class="dd-tabs">
+        <button class="dd-tab" [class.active]="activeTab() === 'all'" (click)="activeTab.set('all')">Todas</button>
+        <button class="dd-tab" [class.active]="activeTab() === 'orders'" (click)="activeTab.set('orders')">Ordens</button>
+        <button class="dd-tab" [class.active]="activeTab() === 'system'" (click)="activeTab.set('system')">Sistema</button>
+      </div>
+
+      <!-- List -->
+      <div class="dd-list">
+        @if (filteredNotifications().length === 0) {
+          <div class="dd-empty">
+            <div class="dd-empty-icon">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M12 2a7 7 0 017 7c0 3.5.7 5.6 1.4 7H3.6C4.3 14.6 5 12.5 5 9a7 7 0 017-7z" stroke="#D3D1C7" stroke-width="1.5"/>
+                <path d="M9.5 19a2.5 2.5 0 005 0" stroke="#D3D1C7" stroke-width="1.5"/>
+              </svg>
+            </div>
+            <div class="dd-empty-title">Nenhuma notificação</div>
+            <div class="dd-empty-sub">Você está em dia! 🎉</div>
+          </div>
+        }
+
+        @for (notif of filteredNotifications(); track notif.id) {
+          <div
+            class="notif-item"
+            [class.unread]="!notif.read"
+            (click)="markAsRead(notif, $event)"
+          >
+            <div class="notif-icon" [class]="getIcon(notif.type)">
+              @if (getIcon(notif.type) === 'order') {
+                <svg viewBox="0 0 16 16" fill="none">
+                  <rect x="2" y="2" width="12" height="12" rx="2" stroke="#185FA5" stroke-width="1.4"/>
+                  <path d="M5 8h6M5 5.5h6M5 10.5h3" stroke="#185FA5" stroke-width="1.2" stroke-linecap="round"/>
+                </svg>
+              }
+              @if (getIcon(notif.type) === 'success') {
+                <svg viewBox="0 0 16 16" fill="none">
+                  <circle cx="8" cy="8" r="6" stroke="#3B6D11" stroke-width="1.4"/>
+                  <path d="M5 8l2.5 2.5L11 6" stroke="#3B6D11" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              }
+              @if (getIcon(notif.type) === 'warning') {
+                <svg viewBox="0 0 16 16" fill="none">
+                  <path d="M8 2l6 12H2L8 2z" stroke="#C67C1A" stroke-width="1.4" stroke-linejoin="round"/>
+                  <path d="M8 6v4M8 11v1" stroke="#C67C1A" stroke-width="1.4" stroke-linecap="round"/>
+                </svg>
+              }
+              @if (getIcon(notif.type) === 'user') {
+                <svg viewBox="0 0 16 16" fill="none">
+                  <circle cx="8" cy="6" r="3" stroke="#534AB7" stroke-width="1.4"/>
+                  <path d="M2 14c0-3.31 2.69-6 6-6s6 2.69 6 6" stroke="#534AB7" stroke-width="1.4" stroke-linecap="round"/>
+                </svg>
+              }
+              @if (getIcon(notif.type) === 'system') {
+                <svg viewBox="0 0 16 16" fill="none">
+                  <rect x="2" y="2" width="12" height="12" rx="2" stroke="#888780" stroke-width="1.4"/>
+                  <path d="M8 6v4M6 8h4" stroke="#888780" stroke-width="1.4" stroke-linecap="round"/>
+                </svg>
+              }
+            </div>
+
+            <div class="notif-content">
+              <div class="notif-title">{{ notif.title }}</div>
+              <div class="notif-desc">{{ notif.description }}</div>
+              <div class="notif-time">{{ formatTime(notif.createdAt) }}</div>
+            </div>
+
+            @if (!notif.read) {
+              <div class="notif-unread-dot"></div>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Footer -->
+      <div class="dd-footer">
+        <span>Ver todas as notificações</span>
+      </div>
+
+    </div>
+  }
+
+</div>
