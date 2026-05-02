@@ -65,6 +65,7 @@ export class ServiceList implements OnInit {
   }
 
   loadStats() {
+    console.log("Stats:" + this.loadingStats)
     this.loadingStats.set(true);
     this.serviceService.getStats().subscribe({
       next: (data) => { this.stats.set(data); this.loadingStats.set(false); },
@@ -80,6 +81,7 @@ export class ServiceList implements OnInit {
   }
 
   loadServices() {
+  console.log('Buscando com tipo:', this.selectedType);
     this.loadingServices.set(true);
     this.serviceService.search({
       categoryId: this.selectedCategory()?.id,
@@ -111,8 +113,15 @@ export class ServiceList implements OnInit {
     this.loadServices();
   }
 
+  // onTypeFilter(type: string) {
+  //   this.selectedType = this.selectedType === type ? '' : type;
+  //   this.currentPage.set(0);
+  //   this.loadServices();
+  // }
+
   onTypeFilter(type: string) {
-    this.selectedType = this.selectedType === type ? '' : type;
+    console.log('Filtro selecionado:', type);
+    this.selectedType = type;
     this.currentPage.set(0);
     this.loadServices();
   }

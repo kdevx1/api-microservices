@@ -34,7 +34,8 @@ export class Sidebar {
       label: 'Gestão',
       items: [
         { label: 'Usuários', icon: 'users', route: '/users' },
-        { label: 'Serviços', icon: 'services', route: '/services' }
+        { label: 'Serviços', icon: 'services', route: '/services' },
+        { label: 'Ordens', icon: 'orders', route: '/orders' }  // ✅ novo
       ]
     },
     {

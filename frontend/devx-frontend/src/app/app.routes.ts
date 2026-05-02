@@ -39,6 +39,11 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/services/service-list/service-list').then(m => m.ServiceList)
       },
+      {
+        path: 'orders',
+        loadComponent: () =>
+          import('./features/services/service-orders/service-orders').then(m => m.ServiceOrders)
+      }
     ]
   },
   {

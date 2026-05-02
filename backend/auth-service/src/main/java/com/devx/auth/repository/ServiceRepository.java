@@ -18,11 +18,12 @@ public interface ServiceRepository extends
     Page<Service> findByNameContainingIgnoreCaseAndCategoryId(String name, Long categoryId, Pageable pageable);
     Page<Service> findByNameContainingIgnoreCase(String name, Pageable pageable);
     Page<Service> findByActiveTrue(Pageable pageable);
-
+    Page<Service> findByType(ServiceType type, Pageable pageable);
+    
     long countByActiveTrue();
     long countByType(ServiceType type);
     long countByCategoryId(Long categoryId);
 
-    @Query("SELECT COALESCE(SUM(so.service.price), 0) FROM ServiceOrder so")
+   @Query("SELECT COALESCE(SUM(so.service.price), 0) FROM ServiceOrder so WHERE so.status = 'DONE'")
     double sumTotalRevenue();
 }

@@ -14,6 +14,7 @@ import com.devx.auth.dto.ServiceStatsResponse;
 import com.devx.auth.enums.OrderStatus;
 import com.devx.auth.enums.ServiceType;
 import com.devx.auth.exception.BusinessException;
+import com.devx.auth.repository.CategoryRepository;
 import com.devx.auth.repository.ServiceOrderRepository;
 import com.devx.auth.repository.ServiceRepository;
 import com.devx.auth.repository.UserRepository;
@@ -28,7 +29,8 @@ public class ServiceService {
     private final ServiceOrderRepository serviceOrderRepository;
     private final UserRepository userRepository;
     private final CategoryService categoryService;
-
+    private final CategoryRepository categoryRepository;
+    
     // =========================
     // SERVICES CRUD
     // =========================
@@ -84,18 +86,27 @@ public class ServiceService {
             try { serviceType = ServiceType.valueOf(type.toUpperCase()); } catch (Exception ignored) {}
         }
 
+        // Com categoria e nome
         if (categoryId != null && name != null && !name.isBlank()) {
             return serviceRepository.findByNameContainingIgnoreCaseAndCategoryId(name, categoryId, pageable).map(this::mapService);
         }
+        // Com categoria e tipo
         if (categoryId != null && serviceType != null) {
             return serviceRepository.findByCategoryIdAndType(categoryId, serviceType, pageable).map(this::mapService);
         }
+        // Só categoria
         if (categoryId != null) {
             return serviceRepository.findByCategoryId(categoryId, pageable).map(this::mapService);
         }
+        // Só nome
         if (name != null && !name.isBlank()) {
             return serviceRepository.findByNameContainingIgnoreCase(name, pageable).map(this::mapService);
         }
+        // ✅ Só tipo
+        if (serviceType != null) {
+            return serviceRepository.findByType(serviceType, pageable).map(this::mapService);
+        }
+        // Todos
         return serviceRepository.findAll(pageable).map(this::mapService);
     }
 
@@ -111,7 +122,7 @@ public class ServiceService {
         return new ServiceStatsResponse(
                 serviceRepository.count(),
                 serviceRepository.countByActiveTrue(),
-                0, // será preenchido via CategoryService
+                categoryRepository.count(), // ✅ corrigido
                 serviceOrderRepository.count(),
                 serviceOrderRepository.countByStatus(OrderStatus.PENDING),
                 serviceRepository.sumTotalRevenue()

@@ -1,0 +1,138 @@
+<div class="page">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <div class="page-title">Ordens de Serviço</div>
+      <div class="page-sub">Gerencie e acompanhe todas as ordens</div>
+    </div>
+    <button class="btn btn-primary" (click)="openOrderForm()">
+      <svg viewBox="0 0 16 16" fill="none">
+        <path d="M8 2v12M2 8h12" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      Nova Ordem
+    </button>
+  </div>
+
+  <!-- Status Filters -->
+  <div class="status-filters">
+    @for (s of statusOptions; track s.value) {
+      <button
+        class="sf-btn"
+        [class.active]="selectedStatus === s.value"
+        (click)="filterByStatus(s.value)"
+      >
+        <div class="sf-dot" [style.background]="s.color"></div>
+        {{ s.label }}
+      </button>
+    }
+  </div>
+
+  <!-- Table -->
+  <div class="table-card">
+    <div class="table-header">
+      <span class="table-title">Ordens</span>
+      <div class="search-box">
+        <svg viewBox="0 0 16 16" fill="none">
+          <circle cx="7" cy="7" r="4.5" stroke="#888780" stroke-width="1.5"/>
+          <path d="M10.5 10.5l3 3" stroke="#888780" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <input type="text" [(ngModel)]="searchName" placeholder="Buscar ordem..." />
+      </div>
+    </div>
+
+    <div class="table-head">
+      <span>#</span>
+      <span>Serviço</span>
+      <span>Cliente</span>
+      <span>Agendado</span>
+      <span>Status</span>
+      <span>Criado em</span>
+      <span>Ações</span>
+    </div>
+
+    @if (loading()) {
+      <div class="table-loading">
+        <span class="spinner"></span>
+        Carregando...
+      </div>
+    }
+
+    @if (!loading()) {
+      @for (order of filteredOrders(); track order.id) {
+        <div class="table-row">
+          <span class="order-id">#{{ order.id.toString().padStart(3, '0') }}</span>
+
+          <div class="svc-cell">
+            <div class="svc-name">{{ order.serviceName }}</div>
+            <div class="svc-cat">{{ order.serviceCategory }}</div>
+          </div>
+
+          <div class="client-cell">
+            <div class="client-avatar">{{ getInitials(order.clientName) }}</div>
+            <span class="client-name">{{ order.clientName }}</span>
+          </div>
+
+          <span class="cell">{{ formatDate(order.scheduledAt) }}</span>
+
+          <span class="badge" [class]="getStatusClass(order.status)">
+            <div class="badge-dot"></div>
+            {{ getStatusLabel(order.status) }}
+          </span>
+
+          <span class="cell">{{ formatDateShort(order.createdAt) }}</span>
+
+          <div class="actions">
+            <button class="action-btn primary" (click)="openStatusModal(order)">
+              <svg viewBox="0 0 16 16" fill="none">
+                <path d="M3 8h10M9 5l3 3-3 3" stroke="#534AB7" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Status
+            </button>
+          </div>
+        </div>
+      }
+
+      @empty {
+        <div class="table-empty">
+          <div class="empty-icon">
+            <svg viewBox="0 0 24 24" fill="none">
+              <rect x="3" y="3" width="18" height="18" rx="3" stroke="#D3D1C7" stroke-width="1.5"/>
+              <path d="M9 12h6M9 8h6M9 16h3" stroke="#D3D1C7" stroke-width="1.4" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="empty-title">Nenhuma ordem encontrada</div>
+          <div class="empty-sub">Crie uma nova ordem para começar</div>
+        </div>
+      }
+    }
+
+    <div class="table-footer">
+      <span>Mostrando {{ filteredOrders().length }} de {{ totalElements() }} ordens</span>
+      <div class="pagination">
+        <button class="pg-btn" (click)="goToPage(currentPage() - 1)" [disabled]="currentPage() === 0">‹</button>
+        @for (page of getPages(); track page) {
+          <button class="pg-btn" [class.active]="page === currentPage()" (click)="goToPage(page)">
+            {{ page + 1 }}
+          </button>
+        }
+        <button class="pg-btn" (click)="goToPage(currentPage() + 1)" [disabled]="currentPage() === totalPages() - 1">›</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Modals -->
+<app-order-form-modal
+  [visible]="orderFormVisible()"
+  (visibleChange)="orderFormVisible.set($event)"
+  (saved)="onOrderSaved()"
+/>
+
+<app-order-status-modal
+  [visible]="statusModalVisible()"
+  [order]="selectedOrder()"
+  (visibleChange)="statusModalVisible.set($event)"
+  (updated)="onStatusUpdated()"
+/>
